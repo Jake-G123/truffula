@@ -4,13 +4,20 @@ As part of Wave 0, please fill out notes for each of the below files. They are i
 PLEASE MAKE FREQUENT COMMITS AS YOU FILL OUT THIS FILE.
 
 ## App.java
+Application for printing a directory tree
 
 ## ConsoleColor.java
+Enum representing ANSI escape codes for console text colors.
 
 ## ColorPrinter.java / ColorPrinterTest.java
+A utility class for printing colored text to a PrintStream using ANSI escape codes.
 
+The ColorPrinter allows setting a current color and printing messages in that color to the specified output stream. The color can be reset after each print or kept active based on the provided parameters.
 ## TruffulaOptions.java / TruffulaOptionsTest.java
+Represents configuration options for controlling how a directory tree is displayed.
 
 ## TruffulaPrinter.java / TruffulaPrinterTest.java
+TruffulaPrinter is responsible for printing a directory tree structure with optional colored output. It supports sorting files and directories in a case-insensitive manner and cycling through colors for visual clarity.
 
 ## AlphabeticalFileSorter.java
+Utility class for sorting an array of files alphabetically by name, ignoring case differences.
