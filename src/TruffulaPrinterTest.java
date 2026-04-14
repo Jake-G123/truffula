@@ -149,4 +149,46 @@ public class TruffulaPrinterTest {
         // Assert that the output matches the expected output exactly
         assertEquals(expected.toString(), output);
     }
+
+    @Test
+    public void testEmptyRoot(@TempDir File tempDir) {
+        File root = new File(tempDir, "root");
+        root.mkdir();
+
+        TruffulaOptions options = new TruffulaOptions(root, true, true);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+
+        TruffulaPrinter printer = new TruffulaPrinter(options, ps);
+
+        printer.printTree();
+        String output = baos.toString();
+
+        assertTrue(output.contains("root/"));
+    }
+    
+    @Test
+    public void testHiddenFilesVisible(@TempDir File tempDir) throws IOException {
+        File root = new File(tempDir, "root");
+        root.mkdir();
+
+        File visible = new File(root, "visible.txt");
+        visible.createNewFile();
+
+        createHiddenFile(root, ".notVisible.txt");
+
+        TruffulaOptions options = new TruffulaOptions(root, true, true);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos);
+
+        TruffulaPrinter printer = new TruffulaPrinter(options, printStream);
+
+        printer.printTree();
+        String output = baos.toString();
+
+        assertTrue(output.contains("visible.txt"));
+        assertTrue(output.contains(".notVisible.txt"));
+    }
 }

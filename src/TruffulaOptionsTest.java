@@ -1,3 +1,4 @@
+import static org.junit.Assert.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -25,5 +26,35 @@ public class TruffulaOptionsTest {
     assertEquals(directory.getAbsolutePath(), options.getRoot().getAbsolutePath());
     assertTrue(options.isShowHidden());
     assertFalse(options.isUseColor());
+  }
+  @Test
+  void testFakePath() {
+    String[] args = {"/test/here"};
+
+    // Act  & Assert: Check that a path that doesnt exist throws filenotfound
+    assertThrows(IllegalArgumentException.class, () -> {
+      new TruffulaOptions(args);
+    });
+  }
+  @Test
+  void testNoPath() {
+    String[] args = {"-h"};
+
+    // Act  & Assert: Check that a missing path throws illegalarg.
+    assertThrows(IllegalArgumentException.class, () -> {
+      new TruffulaOptions(args);
+    });
+  }
+  @Test
+  void testFakeArgs(@TempDir File tempDir) throws FileNotFoundException {
+    // Arrange: Prepare the arguments with the temp directory
+    File directory = new File(tempDir, "subfolder");
+    directory.mkdir();
+    String[] args = {"test", directory.getAbsolutePath()};
+
+    // Act  & Assert: Check that the illegal args error pops up.
+    assertThrows(IllegalArgumentException.class, () -> {
+      new TruffulaOptions(args);
+    });
   }
 }
