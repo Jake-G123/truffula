@@ -21,3 +21,5 @@ TruffulaPrinter is responsible for printing a directory tree structure with opti
 
 ## AlphabeticalFileSorter.java
 Utility class for sorting an array of files alphabetically by name, ignoring case differences.
+
+javac -cp lib/junit-platform-console-standalone-1.12.0.jar src/*.java && java -jar lib/junit-platform-console-standalone-1.12.0.jar --class-path src --scan-class-path

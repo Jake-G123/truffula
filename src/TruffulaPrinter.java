@@ -117,6 +117,10 @@ public class TruffulaPrinter {
   }
 
   private void printTree(File path, int depth, TruffulaOptions options) {
+    if(options.isUseColor()) {
+      out.setCurrentColor(colorSequence.get(depth % colorSequence.size()));
+    }
+
     String indentation = "";
     for(int i = 0; i < depth; i++) indentation +="   ";
 
@@ -125,12 +129,13 @@ public class TruffulaPrinter {
 
     if(isDirectory) message+="/";
 
-    out.println(message);
+    out.println(message, options.isUseColor());
 
     if(isDirectory) {
       File[] children = path.listFiles();
 
       if (children != null) {
+        AlphabeticalFileSorter.sort(children);
         for(File child : children) {
           if (!options.isShowHidden() && child.isHidden()) continue;
           printTree(child, depth+1, options);

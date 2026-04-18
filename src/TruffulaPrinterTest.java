@@ -151,7 +151,7 @@ public class TruffulaPrinterTest {
     }
 
     @Test
-    public void testEmptyRoot(@TempDir File tempDir) {
+    public void testPrintTree_EmptyRoot(@TempDir File tempDir) {
         File root = new File(tempDir, "root");
         root.mkdir();
 
@@ -169,7 +169,7 @@ public class TruffulaPrinterTest {
     }
     
     @Test
-    public void testHiddenFilesVisible(@TempDir File tempDir) throws IOException {
+    public void testPrintTree_HiddenFilesVisible(@TempDir File tempDir) throws IOException {
         File root = new File(tempDir, "root");
         root.mkdir();
 
@@ -190,5 +190,54 @@ public class TruffulaPrinterTest {
 
         assertTrue(output.contains("visible.txt"));
         assertTrue(output.contains(".notVisible.txt"));
+    }
+    @Test
+    public void testPrintTree_withColor(@TempDir File tempDir) throws IOException {
+        File root = new File("colorRoot");
+        root.mkdir();
+
+        File child = new File(root, "file.txt");
+        child.createNewFile();
+
+        TruffulaOptions options = new TruffulaOptions(root, true, true);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream printStream = new PrintStream(baos);
+
+        TruffulaPrinter printer = new TruffulaPrinter(options, printStream);
+
+        printer.printTree();
+
+        String output = baos.toString();
+
+        assertTrue(output.contains("\u001B"));
+        assertTrue(output.contains("colorRoot/"));
+        assertTrue(output.contains("file.txt"));
+        assertTrue(output.contains(ConsoleColor.RESET.toString()));
+    }
+
+    @Test
+    public void testPrintTree_withoutColor(@TempDir File tempDir) throws IOException {
+        File root = new File(tempDir, "root");
+        root.mkdir();
+
+        File file = new File(root, "file.txt");
+        file.createNewFile();
+
+        TruffulaOptions options = new TruffulaOptions(root, true, false);
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        PrintStream ps = new PrintStream(baos);
+
+        TruffulaPrinter printer = new TruffulaPrinter(options, ps);
+        printer.printTree();
+
+        String output = baos.toString();
+
+        assertTrue(output.contains("root/"));
+        assertTrue(output.contains("file.txt"));
+        assertFalse(options.isUseColor());
+        assertFalse(output.contains(ConsoleColor.PURPLE.toString()));
+        assertFalse(output.contains(ConsoleColor.RESET.toString()));
     }
 }
